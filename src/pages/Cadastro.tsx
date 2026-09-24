@@ -1,7 +1,8 @@
 import { FormEvent, useState } from 'react'
 
-import { Eye, EyeOff, UserPlus } from 'lucide-react'
+import { Eye, EyeOff, FileText, UserPlus } from 'lucide-react'
 
+import { PrivacyPolicyModal, POLICY_VERSION } from '../components/PrivacyPolicyModal'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { cadastrarUsuario } from '../services/usuarios'
@@ -14,6 +15,8 @@ interface CadastroProps {
 export function Cadastro({ onCadastroSucesso, onIrParaLogin }: CadastroProps) {
   const [form, setForm] = useState({ nome: '', cpf: '', email: '', senha: '', confirmacaoSenha: '' })
   const [consentimentoAceito, setConsentimentoAceito] = useState(false)
+  const [politicaAberta, setPoliticaAberta] = useState(false)
+  const [leituraPoliticaConcluida, setLeituraPoliticaConcluida] = useState(false)
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState(false)
   const [carregando, setCarregando] = useState(false)
@@ -52,9 +55,14 @@ export function Cadastro({ onCadastroSucesso, onIrParaLogin }: CadastroProps) {
       return
     }
 
-    // O cadastro so avanca quando o titular aceita explicitamente o tratamento de dados.
+    // O cadastro so avanca depois da leitura integral e do aceite explicito do titular.
+    if (!leituraPoliticaConcluida) {
+      setErro('Leia a Política de Privacidade até o final antes de aceitar os termos.')
+      return
+    }
+
     if (!consentimentoAceito) {
-      setErro('Voce deve aceitar o tratamento de dados para concluir o cadastro.')
+      setErro('Você deve aceitar a Política de Privacidade para concluir o cadastro.')
       return
     }
 
@@ -70,17 +78,35 @@ export function Cadastro({ onCadastroSucesso, onIrParaLogin }: CadastroProps) {
         hemocentro_id: null,
         // O payload envia aceite, versao e finalidades para registro auditavel no backend.
         consentimento_aceito: true,
-        consentimento_versao: 'v1.0',
-        consentimento_finalidades: ['cadastro', 'autenticacao', 'seguranca'],
+        consentimento_versao: POLICY_VERSION,
+        consentimento_finalidades: [
+          'cadastro',
+          'autenticacao',
+          'seguranca',
+          'doacao',
+          'triagem',
+          'atendimento',
+          'historico_doacoes',
+          'comunicacao',
+          'recuperacao_conta',
+          'melhoria_plataforma',
+        ],
       })
       setSucesso(true)
       setForm({ nome: '', cpf: '', email: '', senha: '', confirmacaoSenha: '' })
       setConsentimentoAceito(false)
+      setLeituraPoliticaConcluida(false)
     } catch (error) {
       setErro(error instanceof Error ? error.message : 'Não foi possível realizar o cadastro.')
     } finally {
       setCarregando(false)
     }
+  }
+
+  function abrirPolitica() {
+    setConsentimentoAceito(false)
+    setLeituraPoliticaConcluida(false)
+    setPoliticaAberta(true)
   }
 
   return (
@@ -116,16 +142,25 @@ export function Cadastro({ onCadastroSucesso, onIrParaLogin }: CadastroProps) {
           </div>
         </label>
 
-        <label className="flex items-start gap-3 rounded-xl border border-red-100 bg-red-50/60 p-3 text-sm text-zinc-700">
+        <div className="rounded-xl border border-red-100 bg-red-50/60 p-3 text-sm text-zinc-700">
+          <Button variant="secondary" type="button" onClick={abrirPolitica} className="w-full">
+            <FileText size={16} />
+            Ler Política de Privacidade e Uso de Dados
+          </Button>
+          <p className="mt-2 text-xs text-zinc-600">A leitura completa da política é necessária antes do aceite.</p>
+        </div>
+
+        <label className={`flex items-start gap-3 rounded-xl border p-3 text-sm ${leituraPoliticaConcluida ? 'border-red-100 bg-red-50/60 text-zinc-700' : 'border-zinc-200 bg-zinc-100 text-zinc-500'}`}>
           <input
             type="checkbox"
             checked={consentimentoAceito}
             onChange={(event) => setConsentimentoAceito(event.target.checked)}
+            disabled={!leituraPoliticaConcluida}
             required
             className="mt-1 h-4 w-4"
           />
           <span>
-            Li e aceito o tratamento dos meus dados para cadastro, autenticacao e seguranca da conta (versao v1.0).
+            Li e estou ciente da Política de Privacidade e do tratamento dos meus dados pessoais (versão {POLICY_VERSION}).
           </span>
         </label>
 
@@ -143,6 +178,13 @@ export function Cadastro({ onCadastroSucesso, onIrParaLogin }: CadastroProps) {
         {sucesso && <Button variant="secondary" type="button" onClick={onIrParaLogin}>Ir para o login</Button>}
         <Button variant="ghost" size="sm" type="button" onClick={onCadastroSucesso}>Voltar</Button>
       </div>
+
+      <PrivacyPolicyModal
+        open={politicaAberta}
+        onClose={() => setPoliticaAberta(false)}
+        onReadComplete={() => setLeituraPoliticaConcluida(true)}
+        readComplete={leituraPoliticaConcluida}
+      />
     </section>
   )
 }
