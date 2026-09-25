@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 
-import { KeyRound, LifeBuoy, LogIn, MailCheck, UserPlus2 } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, LifeBuoy, LogIn, MailCheck, UserPlus2 } from 'lucide-react'
 
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
@@ -18,6 +18,7 @@ interface LoginProps {
 export function Login({ onLoginSucesso, onTwoFactor, onIrParaCadastro, onEsqueciSenha, mensagemSessaoExpirada }: LoginProps) {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
@@ -77,8 +78,11 @@ export function Login({ onLoginSucesso, onTwoFactor, onIrParaCadastro, onEsqueci
             <KeyRound size={16} className="text-zinc-500" />
             Senha
           </span>
-          <div>
-            <Input type="password" value={senha} onChange={(event) => setSenha(event.target.value)} autoComplete="current-password" required />
+          <div className="relative">
+            <Input type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(event) => setSenha(event.target.value)} autoComplete="current-password" className="pr-12" required />
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-500 hover:bg-red-50" type="button" onClick={() => setMostrarSenha((current) => !current)} aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}>
+              {mostrarSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
         </label>
         {erro && <p className="rounded-xl bg-red-100 px-3 py-2 text-sm text-red-800" role="alert">{erro}</p>}
