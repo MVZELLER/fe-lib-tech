@@ -48,7 +48,3 @@ export function meuHistorico(signal?: AbortSignal) {
 export function agendar(data: { hemocentro_id: number; agendado_em: string; respostas_pre_triagem: RespostaPreTriagem[] }) {
   return request<Agendamento>('/agendamentos', { method: 'POST', body: JSON.stringify(data) })
 }
-
-export function listarHemocentros(signal?: AbortSignal) {
-  return request<{ id: number; nome: string; status: 'ATIVO' | 'INATIVO' }[]>('/hemocentros', { signal })
-}

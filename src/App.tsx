@@ -18,6 +18,7 @@ import { Enfermagem } from './pages/Enfermagem'
 import { Recepcao } from './pages/Recepcao'
 import { TriagemEnfermagem } from './pages/TriagemEnfermagem'
 import { UsersApprove } from './pages/UsersApprove'
+import { Hemocentros } from './pages/Hemocentros'
 import { consultarSessao, sair } from './services/auth'
 import { clearAccessToken, getAccessToken } from './services/session'
 
@@ -194,6 +195,10 @@ function App() {
     if (confirmarSaidaDaTriagem()) navigate('/perfil')
   }
 
+  function abrirHemocentros() {
+    if (confirmarSaidaDaTriagem()) navigate('/hemocentros')
+  }
+
   function contaRemovida() {
     clearAccessToken(); setUsuario(null)
     navigate('/login', { replace: true })
@@ -201,7 +206,7 @@ function App() {
 
   function area(titulo: string, content: React.ReactNode) {
     if (!usuario) return <Navigate to="/login" replace />
-    return <AreaLogada usuario={usuario} titulo={titulo} onPerfil={abrirPerfil} onSair={() => void handleLogout()} onAprovacoes={() => navigate('/users-approve')}>{content}</AreaLogada>
+    return <AreaLogada usuario={usuario} titulo={titulo} onPerfil={abrirPerfil} onSair={() => void handleLogout()} onAprovacoes={() => navigate('/users-approve')} onHemocentros={abrirHemocentros}>{content}</AreaLogada>
   }
 
   const nurseArea = usuario?.perfil === 'ENFERMEIRO'
@@ -227,6 +232,7 @@ function App() {
       <Route path="/enfermeiro/triagens/:id" element={nurseArea && usuario ? area('Atendimento de enfermagem', <TriagemEnfermagem usuario={usuario} />) : acessoNegado} />
       <Route path="/recepcao" element={receptionArea ? area('Recepção de Doadores', <Recepcao />) : acessoNegado} />
       <Route path="/users-approve" element={usuario?.perfil === 'ADMINISTRADOR' ? area('Aprovação de enfermeiros', <UsersApprove />) : acessoNegado} />
+      <Route path="/hemocentros" element={usuario && ['ADMINISTRADOR', 'ENFERMEIRO'].includes(usuario.perfil) ? area('Hemocentros', <Hemocentros />) : acessoNegado} />
       <Route path="/agendamentos" element={usuario?.perfil === 'DOADOR' ? area('Agendamentos e histórico', <Agendamentos />) : acessoNegado} />
       <Route path="/perfil" element={usuario ? <AuthFrame><MeuPerfil usuario={usuario} onVoltarHome={() => navigate('/home')} onContaRemovida={contaRemovida} /></AuthFrame> : <Navigate to="/login" replace />} />
       {/* Rota protegida da central de privacidade; sem sessao ativa redireciona para login. */}

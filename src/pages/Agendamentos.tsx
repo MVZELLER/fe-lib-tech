@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
-import { agendar, listarHemocentros, meusAgendamentos, meuHistorico } from '../services/triagens'
+import { agendar, meusAgendamentos, meuHistorico } from '../services/triagens'
+import { listarHemocentros } from '../services/hemocentros'
 import type { Agendamento, HistoricoItem, RespostaPreTriagem } from '../types/triagem'
 import { dataAtendimento, mensagemErro, STATUS_LABELS } from '../utils/triagemFormatters'
 

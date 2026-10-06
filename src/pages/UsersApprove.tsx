@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Button } from '../components/ui/button'
-import { listarHemocentros } from '../services/triagens'
+import { listarHemocentros } from '../services/hemocentros'
 import { aprovarEnfermeiro, listarEnfermeirosPendentes } from '../services/usuarios'
 import type { AprovacoesPendentes, EnfermeiroPendente } from '../types/usuario'
 import { mensagemErro } from '../utils/triagemFormatters'

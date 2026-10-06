@@ -13,6 +13,7 @@ export const ROUTES = {
   recepcao: '/recepcao',
   agendamentos: '/agendamentos',
   usersApprove: '/users-approve',
+  hemocentros: '/hemocentros',
 } as const
 
 export const PAGE_INFO = {
@@ -29,6 +30,7 @@ export const PAGE_INFO = {
   recepcao: { name: 'Recepção', path: ROUTES.recepcao },
   agendamentos: { name: 'Agendamentos', path: ROUTES.agendamentos },
   usersApprove: { name: 'Aprovação de enfermeiros', path: ROUTES.usersApprove },
+  hemocentros: { name: 'Hemocentros', path: ROUTES.hemocentros },
 } as const
 
 export const PAGE_NAMES = Object.values(PAGE_INFO).map((page) => page.name)

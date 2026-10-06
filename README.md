@@ -101,6 +101,7 @@ Essa validacao e aplicada no cliente HTTP centralizado.
   inativa ate conferencia e aprovacao administrativa;
 - painel administrativo de aprovacao com selecao de hemocentro ativo e
   confirmacao explicita da conferencia profissional e de identidade;
+- cadastro e listagem de hemocentros nas areas de administrador e enfermeiro;
 - area logada com home, perfil e central de direitos do titular;
 - exportacao de dados do titular em PDF;
 - fluxo de revogacao de consentimento e exclusao/anonimizacao de conta.
@@ -115,6 +116,7 @@ Essa validacao e aplicada no cliente HTTP centralizado.
 | `/login` | Acesso principal da aplicacao. |
 | `/cadastro` | Cadastro de doador ou solicitacao de enfermagem com COREN e UF. |
 | `/users-approve` | Administrador: conferir e aprovar enfermeiros pendentes. |
+| `/hemocentros` | Administrador e enfermeiro: listar unidades e cadastrar novos hemocentros. |
 | `/forgot-password` | Solicitacao de link para redefinir senha. |
 | `/reset-password` | Definicao de nova senha com token. |
 | `/two-factor` | Confirmacao do segundo fator de autenticacao. |
@@ -127,6 +129,13 @@ Essa validacao e aplicada no cliente HTTP centralizado.
 | `/agendamentos` | Agendamento, respostas institucionais e historico do doador. |
 
 ## Seguranca
+
+O botao **Hemocentros** aparece no cabecalho para administradores e enfermeiros.
+O cadastro exige nome, endereco, telefone e situacao (`ATIVO` ou `INATIVO`).
+O backend valida a permissao e os limites dos campos; cadastrar uma unidade
+nao altera o vinculo institucional do usuario nem concede edicao ou exclusao
+ao enfermeiro. Publique o backend atualizado junto com este frontend para
+liberar a nova permissao de criacao.
 
 O perfil real e o token de sessao sao retornados pelo backend apos o 2FA.
 O cliente guarda o token em `sessionStorage`, envia `Authorization: Bearer`
