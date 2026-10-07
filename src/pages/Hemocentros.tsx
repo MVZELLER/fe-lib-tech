@@ -165,6 +165,7 @@ export function Hemocentros() {
                 <div><dt className="font-semibold">Endereço</dt><dd className="break-words">{centro.endereco}</dd></div>
                 <div><dt className="font-semibold">Telefone</dt><dd className="break-words">{centro.telefone}</dd></div>
               </dl>
+              <Button variant="secondary" onClick={() => navigate(`/hemocentros/${centro.id}/horarios`)}>Consultar horários</Button>
             </li>)}
           </ul>)}
       </section>

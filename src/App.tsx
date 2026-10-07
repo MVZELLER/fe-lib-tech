@@ -19,6 +19,9 @@ import { Recepcao } from './pages/Recepcao'
 import { TriagemEnfermagem } from './pages/TriagemEnfermagem'
 import { UsersApprove } from './pages/UsersApprove'
 import { Hemocentros } from './pages/Hemocentros'
+import { AgendaHemocentro } from './pages/AgendaHemocentro'
+import { HorariosHemocentro } from './pages/HorariosHemocentro'
+import { confirmarNavegacao } from './hooks/useUnsavedChanges'
 import { consultarSessao, sair } from './services/auth'
 import { clearAccessToken, getAccessToken } from './services/session'
 
@@ -176,6 +179,7 @@ function App() {
   }
 
   function confirmarSaidaDaTriagem() {
+    if (!confirmarNavegacao()) return false
     return !location.pathname.startsWith('/enfermeiro/triagens/') || window.confirm('Antes de sair, confira se salvou a avaliação. Alterações não salvas serão descartadas. Continuar?')
   }
 
@@ -206,7 +210,7 @@ function App() {
 
   function area(titulo: string, content: React.ReactNode) {
     if (!usuario) return <Navigate to="/login" replace />
-    return <AreaLogada usuario={usuario} titulo={titulo} onPerfil={abrirPerfil} onSair={() => void handleLogout()} onAprovacoes={() => navigate('/users-approve')} onHemocentros={abrirHemocentros}>{content}</AreaLogada>
+    return <AreaLogada usuario={usuario} titulo={titulo} onPerfil={abrirPerfil} onSair={() => void handleLogout()} onAprovacoes={() => { if (confirmarSaidaDaTriagem()) navigate('/users-approve') }} onHemocentros={abrirHemocentros} onAgenda={() => { if (confirmarSaidaDaTriagem()) navigate('/agenda') }}>{content}</AreaLogada>
   }
 
   const nurseArea = usuario?.perfil === 'ENFERMEIRO'
@@ -233,6 +237,8 @@ function App() {
       <Route path="/recepcao" element={receptionArea ? area('Recepção de Doadores', <Recepcao />) : acessoNegado} />
       <Route path="/users-approve" element={usuario?.perfil === 'ADMINISTRADOR' ? area('Aprovação de enfermeiros', <UsersApprove />) : acessoNegado} />
       <Route path="/hemocentros" element={usuario && ['ADMINISTRADOR', 'ENFERMEIRO'].includes(usuario.perfil) ? area('Hemocentros', <Hemocentros />) : acessoNegado} />
+      <Route path="/agenda" element={usuario && ['ADMINISTRADOR', 'RESPONSAVEL_HEMOCENTRO'].includes(usuario.perfil) ? area('Agenda da unidade', <AgendaHemocentro usuario={usuario} />) : acessoNegado} />
+      <Route path="/hemocentros/:id/horarios" element={usuario ? area('Horários da unidade', <HorariosHemocentro />) : acessoNegado} />
       <Route path="/agendamentos" element={usuario?.perfil === 'DOADOR' ? area('Agendamentos e histórico', <Agendamentos />) : acessoNegado} />
       <Route path="/perfil" element={usuario ? <AuthFrame><MeuPerfil usuario={usuario} onVoltarHome={() => navigate('/home')} onContaRemovida={contaRemovida} /></AuthFrame> : <Navigate to="/login" replace />} />
       {/* Rota protegida da central de privacidade; sem sessao ativa redireciona para login. */}

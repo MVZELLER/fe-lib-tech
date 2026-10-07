@@ -12,9 +12,10 @@ interface Props {
   onSair: () => void
   onAprovacoes?: () => void
   onHemocentros?: () => void
+  onAgenda?: () => void
 }
 
-export function AreaLogada({ usuario, titulo, children, onPerfil, onSair, onAprovacoes, onHemocentros }: Props) {
+export function AreaLogada({ usuario, titulo, children, onPerfil, onSair, onAprovacoes, onHemocentros, onAgenda }: Props) {
   return (
     <main className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-red-100 p-4 md:p-8">
       <div className="mx-auto max-w-6xl space-y-5 rounded-2xl border border-red-100 bg-white/95 p-5 shadow-xl md:p-8">
@@ -25,6 +26,7 @@ export function AreaLogada({ usuario, titulo, children, onPerfil, onSair, onApro
             <p className="mt-2 text-zinc-600">Olá, {usuario.nome}.</p>
           </div>
           <nav aria-label="Conta" className="flex flex-wrap gap-2">
+            {['ADMINISTRADOR', 'RESPONSAVEL_HEMOCENTRO'].includes(usuario.perfil) && onAgenda && <Button variant="secondary" onClick={onAgenda}>Gerenciar agendas</Button>}
             {['ADMINISTRADOR', 'ENFERMEIRO'].includes(usuario.perfil) && onHemocentros && <Button variant="secondary" onClick={onHemocentros}>Hemocentros</Button>}
             {usuario.perfil === 'ADMINISTRADOR' && onAprovacoes && <Button variant="secondary" onClick={onAprovacoes}>Aprovar enfermeiros</Button>}
             <Button variant="secondary" onClick={onPerfil}>Meu perfil</Button>

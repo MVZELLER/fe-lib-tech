@@ -1,5 +1,6 @@
 import type { ResultadoTriagem, RespostaPreTriagem } from './triagem'
 import type { CorenUF } from './usuario'
+import type { AlteracaoReserva } from './agenda'
 
 // Estrutura de cada consentimento associado ao titular para exibição em tela.
 export interface Consentimento {
@@ -29,6 +30,7 @@ export interface DadosTitular {
     observacoes: string | null
     resultado: ResultadoTriagem | null
     finalizada_em: string | null
+    alteracoes: AlteracaoReserva[]
   }[]
   consentimentos: Consentimento[]
 }

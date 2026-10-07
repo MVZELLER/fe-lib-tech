@@ -10,8 +10,13 @@ export interface Agendamento {
   id: number
   hemocentro_id: number
   agendado_em: string
-  status: 'AGENDADO' | StatusTriagem
+  status: 'AGENDADO' | 'CANCELADO' | StatusTriagem
   recebido_em: string | null
+  horario_id: number | null
+  versao: number
+  cancelavel_ate: string | null
+  remarcavel_ate: string | null
+  cancelado_em: string | null
 }
 
 export interface FilaItem extends Agendamento {

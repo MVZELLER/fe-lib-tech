@@ -99,6 +99,12 @@ export async function downloadExportacaoTitularPdf(payload: ExportacaoTitular): 
         doc.text(`Pergunta: ${resposta.pergunta}`)
         doc.text(`Resposta: ${resposta.resposta}`)
       }
+      for (const alteracao of atendimento.alteracoes) {
+        doc.text(`Alteracao: ${alteracao.acao} em ${formatarDataHora(alteracao.ocorrido_em)}`)
+        if (alteracao.acao === 'REMARCADO') {
+          doc.text(`De: ${formatarDataHora(alteracao.agendado_anterior)} para: ${formatarDataHora(alteracao.agendado_novo)}`)
+        }
+      }
       doc.moveDown()
     }
 

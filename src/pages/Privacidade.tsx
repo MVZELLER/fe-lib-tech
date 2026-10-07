@@ -170,6 +170,12 @@ export function Privacidade({ onVoltar, onContaRemovida, embedded = false }: Pri
               <p>Status: {item.status} · Resultado: {item.resultado ?? '-'}</p>
               <p className="whitespace-pre-wrap">Observações: {item.observacoes ?? '-'}</p>
               {item.pre_triagem.map((resposta, i) => <p key={i} className="mt-2 whitespace-pre-wrap">{resposta.pergunta}: {resposta.resposta}</p>)}
+              {item.alteracoes.length > 0 && <ul className="mt-3 space-y-2" aria-label="Alterações da reserva">
+                {item.alteracoes.map((alteracao, i) => <li key={i}>
+                  {dataAtendimento(alteracao.ocorrido_em)} — {alteracao.acao.toLowerCase().replaceAll('_', ' ')}
+                  {alteracao.acao === 'REMARCADO' && alteracao.agendado_novo && <>: de {dataAtendimento(alteracao.agendado_anterior)} para {dataAtendimento(alteracao.agendado_novo)}</>}
+                </li>)}
+              </ul>}
             </article>)}
           </div>}
           <h2 className="mt-5 text-lg font-semibold text-zinc-900">Consentimentos</h2>

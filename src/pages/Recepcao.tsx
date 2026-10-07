@@ -29,11 +29,11 @@ export function Recepcao() {
     return () => controller.abort()
   }, [pagina, revisao])
 
-  async function confirmar(id: number, nome: string) {
+  async function confirmar(id: number, nome: string, versao: number) {
     if (ocupado || !window.confirm(`Confirma a chegada de ${nome}? Confira a identidade conforme o protocolo da instituição.`)) return
     setOcupado(true); setErro(''); setMensagem('')
     try {
-      await receberDoador(id)
+      await receberDoador(id, versao)
       setMensagem('Chegada confirmada. Atendimento disponível para enfermagem.')
       setRevisao(value => value + 1)
     } catch (error) { setErro(`${mensagemErro(error)} Atualize a lista antes de repetir.`) }
@@ -52,7 +52,7 @@ export function Recepcao() {
       <tbody>{fila.itens.map(item => <tr key={item.id}>
         <td className="border-b p-3">{item.nome}</td><td className="border-b p-3">{item.cpf_mascarado}</td>
         <td className="border-b p-3">{dataAtendimento(item.agendado_em)}</td><td className="border-b p-3">{item.hemocentro_id}</td>
-        <td className="border-b p-3"><Button size="sm" disabled={ocupado} onClick={() => void confirmar(item.id, item.nome)}>Confirmar chegada</Button></td>
+        <td className="border-b p-3"><Button size="sm" disabled={ocupado} onClick={() => void confirmar(item.id, item.nome, item.versao)}>Confirmar chegada</Button></td>
       </tr>)}</tbody>
     </table></div> : <p role="status">Nenhum agendamento aguardando chegada nesta página.</p>)}
     {fila && <nav aria-label="Paginação" className="flex items-center justify-between gap-3">
